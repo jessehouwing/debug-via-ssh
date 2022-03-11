@@ -160,7 +160,8 @@ runs:
     - name: Wait for user to terminate workflow
       uses: jessehouwing/debug-via-ssh/with-post-step@main
       with:
-        post: |
+        post: 
+          #!/bin/bash
           ssh_string=$(grep -oE "tcp://(.+)" .ngrok.log | sed "s/tcp:\/\//ssh $(cat ssh_user)@/" | sed "s/:/ -p /")
           continue_path=$(eval echo ~$(cat ssh_user)/terminate)
           time=${{ inputs.NGROK_TIMEOUT }}
