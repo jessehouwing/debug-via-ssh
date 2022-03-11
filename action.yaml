@@ -151,7 +151,7 @@ runs:
       shell: bash
 
     - name: Wait for user to terminate workflow
-      uses: '${{ github.action_path }}/with-post-step'
+      uses: jessehouwing/debug-via-ssh/with-post-step@main
       with:
         post: |
           ssh_string=$(grep -oE "tcp://(.+)" .ngrok.log | sed "s/tcp:\/\//ssh $(cat ssh_user)@/" | sed "s/:/ -p /")
