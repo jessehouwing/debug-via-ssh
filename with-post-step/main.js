@@ -40,8 +40,12 @@ function run(cmd) {
 const key = process.env.INPUT_KEY.toUpperCase();
 
 if ( process.env[`STATE_${key}`] !== undefined ) { // Are we in the 'post' step?
-  run(process.env.INPUT_POST);
+  if (process.env.INPUT_POST) {
+    run(process.env.INPUT_POST);
+  }
 } else { // Otherwise, this is the main step
   console.log(`::save-state name=${key}::true`);
-  run(process.env.INPUT_MAIN);
+  if (process.env.INPUT_MAIN) {
+    run(process.env.INPUT_MAIN);
+  }
 }

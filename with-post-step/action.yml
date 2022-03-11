@@ -27,10 +27,10 @@ description: 'Generic JS Action to execute a main command and set a command as a
 inputs:
   main:
     description: 'Main command/script.'
-    required: true
+    required: false
   post:
     description: 'Post command/script.'
-    required: true
+    required: false
   key:
     description: 'Name of the state variable used to detect the post step.'
     required: false
