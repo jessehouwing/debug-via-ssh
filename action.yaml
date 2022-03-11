@@ -8,7 +8,7 @@ inputs:
     description: 'Password for SSH session'
     required: true
   NGROK_AUTH_TOKEN:
-    description: 'Authentification token for ngrok'
+    description: 'Authentication token for ngrok'
     required: true
   NGROK_REGION:
     description: 'Region for ngrok session'
@@ -99,7 +99,7 @@ runs:
           unzip ngrok.zip
           chmod +x ./ngrok
 
-        echo "# Set ngrok with the given authentification token"
+        echo "# Set ngrok with the given authentication token"
           ./ngrok authtoken ${{ inputs.NGROK_AUTH_TOKEN }}
       shell: bash
 
@@ -147,5 +147,37 @@ runs:
           time=$((time-10))
         done
 
-        echo "# SSH session terminated. Allowing workflow to continue..."
+        echo "# Allowing workflow to continue..."
       shell: bash
+
+    - name: Wait for user to terminate workflow
+      uses: ./with-post-step
+      with:
+        post: |
+          ssh_string=$(grep -oE "tcp://(.+)" .ngrok.log | sed "s/tcp:\/\//ssh $(cat ssh_user)@/" | sed "s/:/ -p /")
+          continue_path=$(eval echo ~$(cat ssh_user)/terminate)
+          time=${{ inputs.NGROK_TIMEOUT }}
+
+          while [ ! -e $continue_path ] && [ $time -gt 1 ]
+          do
+            echo ""
+            echo "#################"
+            echo "# Connect to this runner using:"
+            echo "#########################################"
+            echo $ssh_string
+            echo "#########################################"
+            echo "#"
+            echo "# Allow workflow to terminate using:"
+            echo "#########################################"
+            echo "bash -c \"touch $continue_path\""
+            echo "#########################################"
+            echo "#"
+            echo "# SSH session time left:"
+            echo "########################################"
+            printf '#%-14s%dh:%02dm:%02ds%-14s#\n' '' $(($time/3600)) $(($time%3600/60)) $(($time%60)) ''
+            echo "########################################"
+            echo ""
+            
+            sleep 10
+            time=$((time-10))
+          done
