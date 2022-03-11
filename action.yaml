@@ -130,7 +130,7 @@ runs:
         time=${{ inputs.NGROK_TIMEOUT }}
         run_main=${{ inputs.RUN_MAIN }}
 
-        while [ ! -e $continue_path ] && [ $time -gt 1 ] && [ "${run_main^^}" -ne "FALSE" ]
+        while [ ! -e $continue_path ] && [ $time -gt 1 ] && [ "${run_main^^}" != "FALSE" ]
         do
           echo ""
           echo "#################"
@@ -166,7 +166,7 @@ runs:
           time=${{ inputs.NGROK_TIMEOUT }}
           run_post=${{ inputs.RUN_POST }}
           
-          while [ ! -e $continue_path ] && [ $time -gt 1 ] && [ "${run_post^^}" -eq "TRUE" ]
+          while [ ! -e $continue_path ] && [ $time -gt 1 ] && [ "${run_post^^}" == "TRUE" ]
           do
             echo ""
             echo "#################"
