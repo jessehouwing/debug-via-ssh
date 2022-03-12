@@ -125,11 +125,14 @@ runs:
           done
         printf " [DONE]\n\n"
 
-        ssh_string=$(grep -oE "tcp://(.+)" .ngrok.log | sed "s/tcp:\/\//ssh $(cat ssh_user)@/" | sed "s/:/ -p /")
         continue_path=$(eval echo ~$(cat ssh_user)/continue)
         time=${{ inputs.NGROK_TIMEOUT }}
         run_main=${{ inputs.RUN_MAIN }}
-
+        ssh_string=$(grep -oE "tcp://(.+)" .ngrok.log | sed "s/tcp:\/\//ssh $(cat ssh_user)@/" | sed "s/:/ -p /")
+        
+        echo $ssh_string
+        echo "bash -c \"touch $continue_path\""
+        
         while [ ! -e $continue_path ] && [ $time -gt 1 ] && [ "${run_main^^}" != "FALSE" ]
         do
           echo ""
@@ -165,6 +168,9 @@ runs:
           ssh_string=$(grep -oE "tcp://(.+)" .ngrok.log | sed "s/tcp:\/\//ssh $(cat ssh_user)@/" | sed "s/:/ -p /")
           continue_path=$(eval echo ~$(cat ssh_user)/terminate)
           time=${{ inputs.NGROK_TIMEOUT }}
+          
+          echo $ssh_string
+          echo "bash -c \"touch $continue_path\""
           
           while [ ! -e $continue_path ] && [ $time -gt 1 ]
           do
