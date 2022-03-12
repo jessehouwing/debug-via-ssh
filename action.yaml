@@ -159,7 +159,7 @@ runs:
 
     - name: Wait for user to terminate workflow
       uses: jessehouwing/debug-via-ssh/with-post-step@main
-      if: ${{ inputs.RUN_POST == "true" }}
+      if: ${{ inputs.RUN_POST == true }}
       with:
         post: 
           ssh_string=$(grep -oE "tcp://(.+)" .ngrok.log | sed "s/tcp:\/\//ssh $(cat ssh_user)@/" | sed "s/:/ -p /")
