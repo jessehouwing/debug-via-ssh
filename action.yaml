@@ -161,7 +161,7 @@ runs:
       uses: jessehouwing/debug-via-ssh/with-post-step@main
       if: ${{ inputs.RUN_POST == 'true' }}
       with:
-        post: 
+        post: |
           ssh_string=$(grep -oE "tcp://(.+)" .ngrok.log | sed "s/tcp:\/\//ssh $(cat ssh_user)@/" | sed "s/:/ -p /")
           continue_path=$(eval echo ~$(cat ssh_user)/terminate)
           time=${{ inputs.NGROK_TIMEOUT }}
